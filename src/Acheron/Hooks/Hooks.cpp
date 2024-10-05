@@ -240,7 +240,10 @@ namespace Acheron
 			if (negate && Processing::RegisterDefeat(a_target, { aggressor, a_target })) {
 				return;
 			} else if (a_hitData.flags.none(RE::HitData::Flag::kBlocked, RE::HitData::Flag::kBlockWithWeapon)) {
-				ValidateStrip(a_target);
+				// BeefBuns Tweak
+				if (a_target->IsPlayerRef() || a_target->IsPlayerTeammate() || aggressor->IsPlayerRef() || aggressor->IsPlayerTeammate()) {
+					ValidateStrip(a_target);
+				}
 			}
 		}
 		return _WeaponHit(a_target, a_hitData);
@@ -302,7 +305,10 @@ namespace Acheron
 				if (negate && Processing::RegisterDefeat(target, caster)) {
 					return;
 				} else if (effect.spell->GetSpellType() != RE::MagicSystem::SpellType::kEnchantment) {
-					ValidateStrip(target);
+					auto aggressor = caster.actor;
+					if (target->IsPlayerRef() || target->IsPlayerTeammate() || aggressor->IsPlayerRef() || aggressor->IsPlayerTeammate()) {
+						ValidateStrip(target);
+					}
 				}
 			}
 			break;
@@ -514,6 +520,11 @@ namespace Acheron
 
 	void Hooks::ValidateStrip(RE::Actor* a_victim)
 	{
+		// BeefBuns Tweak
+		// if (!a_victim->IsPlayerRef() && !a_victim->IsPlayerTeammate()) {
+		// 	return;
+		// }
+
 		if (Random::draw<float>(0, 99.5f) >= Settings::fStripChance)
 			return;
 
