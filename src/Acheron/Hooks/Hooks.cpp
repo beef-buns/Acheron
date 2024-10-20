@@ -306,7 +306,7 @@ namespace Acheron
 					return;
 				} else if (effect.spell->GetSpellType() != RE::MagicSystem::SpellType::kEnchantment) {
 					auto aggressor = caster.actor;
-					if (target->IsPlayerRef() || target->IsPlayerTeammate() || aggressor->IsPlayerRef() || aggressor->IsPlayerTeammate()) {
+					if (target->IsPlayerRef() || target->IsPlayerTeammate() || (aggressor && aggressor->IsPlayerRef()) || (aggressor && aggressor->IsPlayerTeammate())) {
 						ValidateStrip(target);
 					}
 				}
